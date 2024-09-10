@@ -25,6 +25,12 @@ describe('Recintos do Zoologico', () => {
     expect(resultado.recintosViaveis).toBeFalsy();
   });
 
+  test('Não deve encontrar recintos para 1 leão e 1 leopardo juntos', () => {
+    new RecintosZoo().analisaRecintos('LEAO', 1);
+    const resultado = new RecintosZoo().analisaRecintos('LEOPARDO', 1);
+    expect(resultado.erro).toBe('Não há recinto viável');
+  });
+
   test('Deve encontrar recinto para 1 crocodilo', () => {
     const resultado = new RecintosZoo().analisaRecintos('CROCODILO', 1);
     expect(resultado.erro).toBeFalsy();
