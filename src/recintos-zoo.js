@@ -24,13 +24,13 @@ class RecintosZoo {
   ];
 
   analisaRecintos(animal, quantidade) {
-    if (!this.animalValido(animal)) {
+    if (!this.#animalValido(animal)) {
       return {
         erro: 'Animal inválido',
       };
     }
 
-    if (!this.quantidadeValida(quantidade)) {
+    if (!this.#quantidadeValida(quantidade)) {
       return {
         erro: 'Quantidade inválida',
       };
@@ -67,11 +67,11 @@ class RecintosZoo {
     };
   }
 
-  quantidadeValida(quantidade) {
+  #quantidadeValida(quantidade) {
     return typeof quantidade === 'number' && quantidade > 0;
   }
 
-  animalValido(animal) {
+  #animalValido(animal) {
     return this.#animais.some((a) => a.especie === animal);
   }
 }
