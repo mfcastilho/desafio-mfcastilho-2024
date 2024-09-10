@@ -10,7 +10,8 @@ class Recinto {
     this.#bioma = bioma;
     this.#tamanhoTotal = tamanhoTotal;
     this.#animais = animais;
-    this.#espacoLivre = this.tamanhoTotal - this.#calculaEspacoOcupado(this.#animais);
+    this.#espacoLivre =
+      this.tamanhoTotal - this.#calculaEspacoOcupado(this.#animais);
   }
 
   get numero() {
@@ -34,8 +35,6 @@ class Recinto {
   }
 
   recintoViavel(animal, quantidade) {
-    const espacoNecessario = animal.tamanho * quantidade;
-
     //Regra1: Um animal se sente confortável se está num bioma adequado e com espaço suficiente para cada indivíduo
     if (!this.#validaBioma(animal)) {
       return false;
@@ -48,7 +47,7 @@ class Recinto {
     const espacoLivre = this.#calculaEspacoLivre(animal, quantidade);
 
     //Regra3: Animais já presentes no recinto devem continuar confortáveis com a inclusão do(s) novo(s)
-    if (espacoLivre < espacoNecessario) {
+    if (espacoLivre < 0) {
       return false;
     }
 
@@ -73,7 +72,7 @@ class Recinto {
 
     const espacoLivre = this.#tamanhoTotal - espacoOcupado - espacoExtra;
 
-    return espacoLivre >= 0 ? espacoLivre : 0;
+    return espacoLivre;
   }
 
   #ehCompativel(animalNovo, quantidade) {
@@ -82,11 +81,11 @@ class Recinto {
       if (!this.#validaCarnivoros(animalAtual, animalNovo)) {
         return false;
       }
+    }
 
-      //regra4: Hipopótamo(s) só tolera(m) outras espécies estando num recinto com savana e rio
-      if (!this.#validaHipopotamo(this.#animais, animalNovo)) {
-        return false;
-      }
+    //regra4: Hipopótamo(s) só tolera(m) outras espécies estando num recinto com savana e rio
+    if (!this.#validaHipopotamo(this.#animais, animalNovo)) {
+      return false;
     }
 
     //Reagra5: Um macaco não se sente confortável sem outro animal no recinto, seja da mesma ou outra espécie
@@ -120,18 +119,31 @@ class Recinto {
   }
 
   #validaHipopotamo(animais, animalNovo) {
-    for (const animalAtual of animais) {
-      //regra4: Hipopótamo(s) só tolera(m) outras espécies estando num recinto com savana e rio
-      if (
-        animalAtual.especie === 'HIPOPOTAMO' ||
-        animalNovo.especie === 'HIPOPOTAMO'
-      ) {
-        if (!this.#bioma.includes('SAVANA') || !this.#bioma.includes('RIO')) {
-          return false;
-        }
+    // Verifica se há algum hipopótamo no recinto atual ou se o novo animal é um hipopótamo
+    const temHipopotamo =
+      animais.some((a) => a.especie === 'HIPOPOTAMO') ||
+      animalNovo.especie === 'HIPOPOTAMO';
+
+    // Se há hipopótamos no recinto
+    if (temHipopotamo) {
+      // Verifica se o recinto possui ambos os biomas: "SAVANA" e "RIO"
+      const temSavana = this.#bioma.includes('SAVANA');
+      const temRio = this.#bioma.includes('RIO');
+
+      // Contabiliza o total de animais no recinto, incluindo o novo animal se for um hipopótamo
+      const totalAnimais =
+        animais.length + (animalNovo.especie === 'HIPOPOTAMO' ? 1 : 0);
+
+      if (totalAnimais > 1) {
+        // Se há mais de um animal, o recinto deve ter ambos os biomas
+        return temSavana && temRio;
+      } else {
+        // Se o hipopótamo está sozinho, o recinto pode ter apenas um dos biomas
+        return temSavana || temRio;
       }
     }
 
+    // Se não há hipopótamos, a validação para outros animais não é necessária
     return true;
   }
 
