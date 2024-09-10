@@ -35,7 +35,6 @@ class Recinto {
   }
 
   recintoViavel(animal, quantidade) {
-    //Regra1: Um animal se sente confortável se está num bioma adequado e com espaço suficiente para cada indivíduo
     if (!this.#validaBioma(animal)) {
       return false;
     }
@@ -46,7 +45,6 @@ class Recinto {
 
     const espacoLivre = this.#calculaEspacoLivre(animal, quantidade);
 
-    //Regra3: Animais já presentes no recinto devem continuar confortáveis com a inclusão do(s) novo(s)
     if (espacoLivre < 0) {
       return false;
     }
@@ -57,7 +55,7 @@ class Recinto {
   }
 
   #calculaEspacoLivre(animal, quantidade) {
-    const animaisCopy = this.#animais;
+    const animaisCopy = [...this.#animais];
 
     for (let i = 0; i < quantidade; i++) {
       animaisCopy.push(animal);
@@ -67,7 +65,6 @@ class Recinto {
 
     const numeroDeEspecies = new Set(animaisCopy.map((a) => a.especie)).size;
 
-    //Reagra6: Quando há mais de uma espécie no mesmo recinto, é preciso considerar 1 espaço extra ocupado
     const espacoExtra = numeroDeEspecies > 1 ? 1 : 0;
 
     const espacoLivre = this.#tamanhoTotal - espacoOcupado - espacoExtra;
@@ -77,18 +74,15 @@ class Recinto {
 
   #ehCompativel(animalNovo, quantidade) {
     for (const animalAtual of this.#animais) {
-      //regra2: Animais carnívoros devem habitar somente com a própria espécie
       if (!this.#validaCarnivoros(animalAtual, animalNovo)) {
         return false;
       }
     }
 
-    //regra4: Hipopótamo(s) só tolera(m) outras espécies estando num recinto com savana e rio
     if (!this.#validaHipopotamo(this.#animais, animalNovo)) {
       return false;
     }
 
-    //Reagra5: Um macaco não se sente confortável sem outro animal no recinto, seja da mesma ou outra espécie
     if (!this.#validaMacaco(this.#animais, animalNovo, quantidade)) {
       return false;
     }
@@ -107,7 +101,6 @@ class Recinto {
   }
 
   #validaCarnivoros(animalAtual, animalNovo) {
-    //regra2: Animais carnívoros devem habitar somente com a própria espécie
     if (
       (animalAtual.ehCarnivoro || animalNovo.ehCarnivoro) &&
       animalAtual.especie !== animalNovo.especie
@@ -119,36 +112,28 @@ class Recinto {
   }
 
   #validaHipopotamo(animais, animalNovo) {
-    // Verifica se há algum hipopótamo no recinto atual ou se o novo animal é um hipopótamo
     const temHipopotamo =
       animais.some((a) => a.especie === 'HIPOPOTAMO') ||
       animalNovo.especie === 'HIPOPOTAMO';
 
-    // Se há hipopótamos no recinto
     if (temHipopotamo) {
-      // Verifica se o recinto possui ambos os biomas: "SAVANA" e "RIO"
       const temSavana = this.#bioma.includes('SAVANA');
       const temRio = this.#bioma.includes('RIO');
 
-      // Contabiliza o total de animais no recinto, incluindo o novo animal se for um hipopótamo
       const totalAnimais =
         animais.length + (animalNovo.especie === 'HIPOPOTAMO' ? 1 : 0);
 
       if (totalAnimais > 1) {
-        // Se há mais de um animal, o recinto deve ter ambos os biomas
         return temSavana && temRio;
       } else {
-        // Se o hipopótamo está sozinho, o recinto pode ter apenas um dos biomas
         return temSavana || temRio;
       }
     }
 
-    // Se não há hipopótamos, a validação para outros animais não é necessária
     return true;
   }
 
   #validaMacaco(animais, animalNovo, quantidade) {
-    //Reagra5: Um macaco não se sente confortável sem outro animal no recinto, seja da mesma ou outra espécie
     if (
       animalNovo.especie === 'MACACO' &&
       animais.length === 0 &&
