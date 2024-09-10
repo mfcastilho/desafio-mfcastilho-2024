@@ -11,7 +11,7 @@ class Recinto {
     this.#tamanhoTotal = tamanhoTotal;
     this.#animais = animais;
     this.#espacoLivre =
-      this.tamanhoTotal - this.#calculaEspacoOcupado(this.#animais);
+    this.tamanhoTotal - this.#calculaEspacoOcupado(this.#animais);
   }
 
   get numero() {
