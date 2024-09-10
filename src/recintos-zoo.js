@@ -39,9 +39,11 @@ class RecintosZoo {
     const animalObj = this.#animais.find((a) => a.especie === animal);
     const recintosViaveis = [];
 
+    console.log(this.#recintos);
+    
     for (const recinto of this.#recintos) {
       const recintoViavel = recinto.recintoViavel(animalObj, quantidade);
-
+      
       if (recintoViavel) {
         recintosViaveis.push(recinto);
       }
@@ -74,7 +76,7 @@ class RecintosZoo {
   }
 }
 
-const resultado = new RecintosZoo().analisaRecintos('HIPOPOTAMO', 1);
-console.log(resultado);
+let resultado = new RecintosZoo().analisaRecintos('HIPOPOTAMO', 1);
+console.log(resultado.recintosViaveis);
 
 export { RecintosZoo as RecintosZoo };
