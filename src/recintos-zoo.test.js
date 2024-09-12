@@ -7,7 +7,7 @@ describe('Recintos do Zoologico', () => {
     expect(resultado.recintosViaveis).toBeFalsy();
   });
 
-  test('Deve rejeitar se animal não for string: animal inválido', () => {
+  test(c, () => {
     const resultado = new RecintosZoo().analisaRecintos(true, 1);
     expect(resultado.erro).toBe('Animal inválido');
     expect(resultado.recintosViaveis).toBeFalsy();
