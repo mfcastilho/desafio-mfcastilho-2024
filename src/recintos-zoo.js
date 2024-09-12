@@ -24,7 +24,7 @@ class RecintosZoo {
   ];
 
   analisaRecintos(animal, quantidade) {
-    if (!this.#animalValido(animal)) {
+    if (typeof animal !== 'string' || !this.#animalValido(animal)) {
       return {
         erro: 'Animal inválido',
       };
@@ -36,14 +36,15 @@ class RecintosZoo {
       };
     }
 
-    const animalObj = this.#animais.find((a) => a.especie === animal);
+    const animalObj = this.#animais.find(
+      (a) => a.especie.toUpperCase() === animal.toUpperCase()
+    );
+
     const recintosViaveis = [];
 
-    console.log(this.#recintos);
-    
     for (const recinto of this.#recintos) {
       const recintoViavel = recinto.recintoViavel(animalObj, quantidade);
-      
+
       if (recintoViavel) {
         recintosViaveis.push(recinto);
       }
@@ -58,11 +59,7 @@ class RecintosZoo {
     return {
       recintosViaveis: recintosViaveis.map(
         (recinto) =>
-          `Recinto ${
-            recinto.numero
-          } (espaço livre: ${recinto.espacoLivre} total: ${
-            recinto.tamanhoTotal
-          })`
+          `Recinto ${recinto.numero} (espaço livre: ${recinto.espacoLivre} total: ${recinto.tamanhoTotal})`
       ),
     };
   }
@@ -72,11 +69,13 @@ class RecintosZoo {
   }
 
   #animalValido(animal) {
-    return this.#animais.some((a) => a.especie === animal);
+    return this.#animais.some(
+      (a) => a.especie.toUpperCase() === animal.toUpperCase()
+    );
   }
 }
 
-let resultado = new RecintosZoo().analisaRecintos('HIPOPOTAMO', 1);
-console.log(resultado.recintosViaveis);
+let zoo = new RecintosZoo();
+console.log(zoo.analisaRecintos( 'GAZELA', 1));
 
 export { RecintosZoo as RecintosZoo };
