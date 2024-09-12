@@ -7,6 +7,12 @@ describe('Recintos do Zoologico', () => {
     expect(resultado.recintosViaveis).toBeFalsy();
   });
 
+  test('Deve rejeitar se animal não for string: animal inválido', () => {
+    const resultado = new RecintosZoo().analisaRecintos(true, 1);
+    expect(resultado.erro).toBe('Animal inválido');
+    expect(resultado.recintosViaveis).toBeFalsy();
+  });
+
   test('Deve rejeitar quantidade inválida', () => {
     const resultado = new RecintosZoo().analisaRecintos('MACACO', 0);
     expect(resultado.erro).toBe('Quantidade inválida');
